@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGame } from '../contexts/GameContext';
 import { xpForLevel } from '../db/models';
 import type { PlayerStats } from '../db/models';
@@ -15,9 +15,13 @@ const STAT_CONFIG: { key: keyof PlayerStats; label: string; img: string; color: 
 ];
 
 export default function Dashboard() {
-  const { state } = useGame();
+  const { state, refreshPlayer } = useGame();
   const player = state.player;
   const [showCharts, setShowCharts] = useState(false);
+
+  useEffect(() => {
+    refreshPlayer();
+  }, []);
 
   if (!player) {
     return (

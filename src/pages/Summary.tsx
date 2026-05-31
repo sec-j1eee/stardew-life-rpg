@@ -211,8 +211,10 @@ export default function Summary() {
         for (const key of keys) {
           const newVal = updatedPlayer.stats[key] as number;
           const oldVal = (morningSnapshot as Record<string, number>)[key] || 0;
-          const delta = Math.round((newVal - oldVal) * 10) / 10;
-          if (delta !== 0) (changes as Record<string, number>)[key] = delta;
+          const roundedNew = Math.round(newVal * 10) / 10;
+          const roundedOld = Math.round(oldVal * 10) / 10;
+          const delta = Math.round((roundedNew - roundedOld) * 10) / 10;
+          if (Math.abs(delta) >= 0.05) (changes as Record<string, number>)[key] = delta;
         }
         data.statsChanges = changes;
         if (data.id) {

@@ -31,25 +31,44 @@ export default function Home() {
       flexDirection: 'column',
       background: 'var(--color-bg)',
     }}>
-      {/* 上半部分：图片 */}
+      {/* 上半部分：标题 */}
       <div style={{
         flex: '0 0 55%',
         display: 'flex',
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-        padding: '20px 40px 0',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        padding: '0 40px',
+        gap: 6,
+        paddingBottom: 16,
       }}>
-        <img
-          src="/assets/sdv/icons/home_bg.png"
-          alt="Stardew Life RPG"
-          style={{
-            width: '100%',
-            maxWidth: 650,
-            height: 'auto',
-            maxHeight: '100%',
-            objectFit: 'contain',
-          }}
-        />
+        <div style={{
+          fontFamily: 'var(--font-pixel)',
+          fontSize: 42,
+          color: 'var(--color-brown-dark)',
+          letterSpacing: 6,
+          textShadow: '3px 3px 0 rgba(212,160,23,0.3)',
+        }}>
+          STARDEW LIFE
+        </div>
+        <div style={{
+          fontFamily: 'var(--font-pixel)',
+          fontSize: 14,
+          color: 'var(--color-brown)',
+          letterSpacing: 3,
+          marginBottom: 12,
+        }}>
+          将你的日常生活变成一场冒险
+        </div>
+        <div style={{ display: 'flex', gap: 4, justifyContent: 'center', alignItems: 'flex-end' }}>
+          {['alex','elliott','harvey','sam','sebastian','shane','abigail','emily','haley','leah','maru','penny'].map(name => (
+            <img key={name}
+              src={`/assets/sdv/icons/characters/${name}_stand_3x.png`}
+              alt={name}
+              style={{ width: 32, height: 64, imageRendering: 'pixelated' }}
+            />
+          ))}
+        </div>
       </div>
 
       {/* 下半部分：菜单 */}
@@ -58,9 +77,10 @@ export default function Home() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        gap: 16,
+        justifyContent: 'flex-start',
+        gap: 10,
         padding: '0 32px 24px',
+        paddingTop: 0,
       }}>
         {state.player ? (
           <>

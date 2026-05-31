@@ -19,8 +19,12 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-title" style={{ padding: '8px 0' }}>
-        <img src="/assets/sdv/icons/home_bg.png" alt="Stardew Life RPG"
-          style={{ width: '100%', imageRendering: 'pixelated' }} />
+        <div style={{
+          fontFamily: 'var(--font-pixel)', fontSize: 15, color: 'var(--color-gold)',
+          textAlign: 'center', letterSpacing: 3, lineHeight: 1.6,
+        }}>
+          STARDEW<br />LIFE
+        </div>
       </div>
 
       <nav className="sidebar-nav">
