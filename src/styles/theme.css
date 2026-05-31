@@ -1,0 +1,356 @@
+/* === 星露谷风格像素主题 === */
+
+/* 最像素 Zpix — 开源中文像素字体 */
+@font-face {
+  font-family: 'Zpix';
+  src: url('/fonts/Zpix.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* 主色调 - 星露谷温暖大地色系 */
+  --color-brown-dark: #4a3728;
+  --color-brown: #6b4f3c;
+  --color-brown-light: #8b6914;
+  --color-gold: #d4a017;
+  --color-gold-light: #f0c75e;
+  --color-green-dark: #1a4314;
+  --color-green: #2d6e1e;
+  --color-green-light: #4caf50;
+  --color-blue-dark: #1a3a5c;
+  --color-blue: #2a5f8a;
+  --color-blue-sky: #6bceff;
+  --color-red: #c0392b;
+  --color-red-light: #e74c3c;
+  --color-cream: #f5f0e1;
+  --color-cream-dark: #e8dcc8;
+  --color-parchment: #fdf5e6;
+  --color-black: #1a1a1a;
+
+  /* UI颜色 */
+  --color-bg: #e8dcc8;
+  --color-bg-dark: #d4c4a8;
+  --color-panel: #fdf5e6;
+  --color-panel-border: #6b4f3c;
+  --color-text: #3a2a1a;
+  --color-text-light: #6b4f3c;
+  --color-text-gold: #8b6914;
+  --color-hp-bar: #4caf50;
+  --color-hp-bar-bg: #2d1a1a;
+  --color-xp-bar: #6bceff;
+  --color-xp-bar-bg: #1a2a3a;
+  --color-stamina-bar: #f0c75e;
+  --color-stamina-bar-bg: #3a2a1a;
+
+  /* 像素边框宽度 */
+  --border-pixel: 3px;
+  --border-pixel-thin: 2px;
+
+  /* 间距 */
+  --gap-xs: 6px;
+  --gap-sm: 10px;
+  --gap-md: 20px;
+  --gap-lg: 28px;
+  --gap-xl: 40px;
+
+  /* 像素阴影偏移 */
+  --shadow-pixel: 4px 4px 0px rgba(0, 0, 0, 0.3);
+
+  /* 字体 — 中文像素风 */
+  --font-display: 'Zpix', 'Microsoft YaHei', monospace;
+  --font-text: 'Zpix', 'Microsoft YaHei', 'PingFang SC', monospace;
+}
+
+/* === 全局重置 === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  image-rendering: pixelated;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-text);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+/* === 像素边框 === */
+.pixel-border {
+  border: var(--border-pixel) solid var(--color-panel-border);
+  box-shadow:
+    inset -2px -2px 0px rgba(0,0,0,0.2),
+    inset 2px 2px 0px rgba(255,255,255,0.3);
+  background: var(--color-panel);
+}
+
+.pixel-border-thin {
+  border: var(--border-pixel-thin) solid var(--color-brown);
+  box-shadow:
+    inset -1px -1px 0px rgba(0,0,0,0.15),
+    inset 1px 1px 0px rgba(255,255,255,0.2);
+}
+
+/* === 像素按钮 === */
+.pixel-btn {
+  font-family: var(--font-display);
+  font-size: 15px;
+  padding: 10px 20px;
+  border: var(--border-pixel) solid var(--color-brown-dark);
+  background: var(--color-brown);
+  color: var(--color-cream);
+  cursor: pointer;
+  letter-spacing: 2px;
+  position: relative;
+  box-shadow: var(--shadow-pixel);
+  transition: transform 0.05s, box-shadow 0.05s;
+  user-select: none;
+}
+
+.pixel-btn:hover {
+  background: var(--color-brown-light);
+}
+
+.pixel-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.3);
+}
+
+.pixel-btn.primary {
+  background: var(--color-gold);
+  border-color: var(--color-brown-dark);
+  color: var(--color-brown-dark);
+}
+
+.pixel-btn.primary:hover {
+  background: var(--color-gold-light);
+}
+
+.pixel-btn.success {
+  background: var(--color-green);
+  border-color: var(--color-green-dark);
+}
+
+.pixel-btn.success:hover {
+  background: var(--color-green-light);
+}
+
+.pixel-btn.danger {
+  background: var(--color-red);
+  border-color: #7b1a1a;
+}
+
+.pixel-btn.danger:hover {
+  background: var(--color-red-light);
+}
+
+.pixel-btn.small {
+  font-size: 13px;
+  padding: 5px 10px;
+  letter-spacing: 1px;
+}
+
+/* === 像素面板 === */
+.pixel-panel {
+  background: var(--color-panel);
+  border: var(--border-pixel) solid var(--color-panel-border);
+  box-shadow:
+    inset -2px -2px 0px rgba(0,0,0,0.2),
+    inset 2px 2px 0px rgba(255,255,255,0.3),
+    var(--shadow-pixel);
+  padding: var(--gap-md);
+}
+
+/* === 像素进度条 === */
+.pixel-progress {
+  height: 20px;
+  background: var(--color-xp-bar-bg);
+  border: var(--border-pixel-thin) solid var(--color-brown-dark);
+  position: relative;
+  overflow: hidden;
+}
+
+.pixel-progress-fill {
+  height: 100%;
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.pixel-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 4px,
+    rgba(255,255,255,0.15) 4px,
+    rgba(255,255,255,0.15) 8px
+  );
+}
+
+.pixel-progress-fill.xp { background: var(--color-xp-bar); }
+.pixel-progress-fill.stamina { background: var(--color-stamina-bar); }
+.pixel-progress-fill.hp { background: var(--color-hp-bar); }
+
+.progress-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--color-cream);
+  text-shadow: 1px 1px 0px rgba(0,0,0,0.8);
+  white-space: nowrap;
+  z-index: 1;
+}
+
+/* === 像素输入框 === */
+.pixel-input {
+  font-family: var(--font-text);
+  font-size: 15px;
+  padding: 8px 12px;
+  border: var(--border-pixel-thin) solid var(--color-brown);
+  background: var(--color-panel);
+  color: var(--color-text);
+  outline: none;
+  width: 100%;
+}
+
+.pixel-input:focus {
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.25);
+}
+
+.pixel-textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* === 像素标签 === */
+.pixel-label {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--color-text-light);
+  letter-spacing: 2px;
+  margin-bottom: var(--gap-xs);
+  display: block;
+}
+
+/* === 像素标题 === */
+.pixel-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--color-brown-dark);
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.08);
+  margin-bottom: var(--gap-md);
+  letter-spacing: 3px;
+}
+
+.pixel-subtitle {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--color-text-light);
+  letter-spacing: 1px;
+}
+
+/* === 像素徽章 === */
+.pixel-badge {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 11px;
+  padding: 3px 8px;
+  background: var(--color-gold);
+  color: var(--color-brown-dark);
+  border: 1px solid var(--color-brown-dark);
+  letter-spacing: 1px;
+}
+
+.pixel-badge.locked {
+  background: #888;
+  color: #444;
+}
+
+/* === 滚动条 === */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-dark);
+  border-left: 1px solid var(--color-brown);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-brown);
+  border: 1px solid var(--color-brown-dark);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brown-light);
+}
+
+/* === 动画 === */
+@keyframes pixel-pop-in {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pixel-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes pixel-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pixel-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-pop-in {
+  animation: pixel-pop-in 0.3s ease;
+}
+
+.animate-bounce {
+  animation: pixel-bounce 1s infinite;
+}
+
+.animate-fade-in {
+  animation: pixel-fade-in 0.4s ease;
+}
+
+/* 金色闪光效果 */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-gold) 0%,
+    var(--color-gold-light) 50%,
+    var(--color-gold) 100%
+  );
+  background-size: 200% 100%;
+  animation: pixel-shimmer 2s infinite;
+}
