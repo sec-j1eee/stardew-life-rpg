@@ -67,8 +67,26 @@ export default function Summary() {
     const questXP = todayQuests.reduce((sum, q) => sum + q.xpReward, 0);
     const questGold = todayQuests.reduce((sum, q) => sum + q.goldReward, 0);
     const pomoCount = todaySessions.filter(s => s.type === 'focus').length;
-    const xpEarned = questXP + pomoCount * XP_TABLE.POMODORO_FOCUS;
-    const goldEarned = questGold + pomoCount * GOLD_TABLE.POMODORO_FOCUS;
+    let xpEarned = questXP + pomoCount * XP_TABLE.POMODORO_FOCUS;
+    let goldEarned = questGold + pomoCount * GOLD_TABLE.POMODORO_FOCUS;
+
+    // 加上日记奖励（与 handleSubmit 保持一致）
+    if (todayLog) {
+      if (todayLog.meals.length >= 3 && todayLog.meals.every(m => m.healthRating === 'healthy')) {
+        xpEarned += XP_TABLE.HEALTHY_MEAL;
+      }
+      if (todayLog.sleep.quality >= 4) {
+        xpEarned += XP_TABLE.GOOD_SLEEP;
+      }
+      if (todayLog.mood >= 4) {
+        xpEarned += XP_TABLE.GOOD_MOOD;
+      }
+      const journalComplete = todayLog.meals.length > 0 && todayLog.activities.length > 0 && todayLog.notes.length > 0;
+      if (journalComplete) {
+        xpEarned += XP_TABLE.JOURNAL_FULL;
+        goldEarned += GOLD_TABLE.JOURNAL_FULL;
+      }
+    }
 
     const mealCounts = todayLog
       ? { total: todayLog.meals.length, healthy: todayLog.meals.filter(m => m.healthRating === 'healthy').length }
