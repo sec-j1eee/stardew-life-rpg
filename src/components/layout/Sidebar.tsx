@@ -47,6 +47,51 @@ export default function Sidebar() {
         ))}
       </nav>
 
+      <div style={{ borderTop: '2px solid rgba(255,255,255,0.1)', paddingTop: 8, display: 'flex', gap: 4 }}>
+        <button
+          onClick={async () => {
+            const db = (await import('../../db/database')).db;
+            const data: any = {};
+            for (const table of db.tables) {
+              data[table.name] = await table.toArray();
+            }
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = `stardew-life-backup-${new Date().toISOString().slice(0,10)}.json`;
+            a.click(); URL.revokeObjectURL(url);
+          }}
+          className="pixel-btn small"
+          style={{ flex: 1, fontSize: 9, padding: '4px 6px', letterSpacing: 0 }}
+        >
+          导出
+        </button>
+        <button
+          onClick={() => {
+            const input = document.createElement('input');
+            input.type = 'file'; input.accept = '.json';
+            input.onchange = async (e: any) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const text = await file.text();
+              const data = JSON.parse(text);
+              const db = (await import('../../db/database')).db;
+              for (const table of db.tables) {
+                await table.clear();
+                const rows = data[table.name] || [];
+                if (rows.length > 0) await table.bulkAdd(rows);
+              }
+              alert('导入成功！刷新页面生效。');
+              location.reload();
+            };
+            input.click();
+          }}
+          className="pixel-btn small"
+          style={{ flex: 1, fontSize: 9, padding: '4px 6px', letterSpacing: 0 }}
+        >
+          导入
+        </button>
+      </div>
       {player && (
         <div style={{ padding: '8px 0', borderTop: '2px solid rgba(255,255,255,0.1)' }}>
           <div style={{ fontSize: 9, color: '#f0c75e', fontFamily: 'var(--font-pixel)', marginBottom: 4 }}>

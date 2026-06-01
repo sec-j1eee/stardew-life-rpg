@@ -132,30 +132,9 @@ export default function Journal() {
   }
 
   async function handleSubmit() {
-    const data = {
-      date: today,
-      meals,
-      sleep: {
-        startTime: sleepStart,
-        endTime: sleepEnd,
-        quality: sleepQuality as 1 | 2 | 3 | 4 | 5,
-      },
-      mood,
-      emotions,
-      activities,
-      socialActivities,
-      rewardsClaimed: [] as string[],
-      notes,
-    };
-
-    if (log?.id) {
-      await db.dailyLogs.update(log.id, data);
-    } else {
-      await db.dailyLogs.add(data as DailyLog);
-    }
-
-    // 奖励（每项每日仅给一次，可分次记录）
-    const claimed: string[] = log?.rewardsClaimed || [];
+    // 奖励（每项每日仅给一次，查DB避免React状态延迟）
+    const dbLog = await db.dailyLogs.where('date').equals(today).first();
+    const claimed: string[] = dbLog?.rewardsClaimed || [];
 
     if (!claimed.includes('meal') && meals.length >= 3 && meals.every(m => m.healthRating === 'healthy')) {
       await addXP(XP_TABLE.HEALTHY_MEAL);
@@ -192,7 +171,27 @@ export default function Journal() {
       await updateStats({ social: Math.round(socialGain * 10) / 10 });
     }
 
-    data.rewardsClaimed = claimed;
+    const data = {
+      date: today,
+      meals,
+      sleep: {
+        startTime: sleepStart,
+        endTime: sleepEnd,
+        quality: sleepQuality as 1 | 2 | 3 | 4 | 5,
+      },
+      mood,
+      emotions,
+      activities,
+      socialActivities,
+      rewardsClaimed: claimed,
+      notes,
+    };
+
+    if (log?.id) {
+      await db.dailyLogs.update(log.id, data);
+    } else {
+      await db.dailyLogs.add(data as DailyLog);
+    }
 
     await loadLog();
   }
