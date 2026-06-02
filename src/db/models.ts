@@ -19,7 +19,7 @@ export interface Player {
 }
 
 // 任务
-export type QuestType = 'daily' | 'phase';
+export type QuestType = 'daily' | 'limited' | 'phase';
 export type RepeatPattern = 'everyday' | 'weekday' | 'weekend' | 'custom';
 
 export interface Subtask {
@@ -41,6 +41,7 @@ export interface Quest {
   itemReward?: string;
   completed: boolean;
   completedDate?: string; // YYYY-MM-DD
+  date?: string; // YYYY-MM-DD for limited/daily quests
   createdAt: Date;
   archived: boolean;
 }
