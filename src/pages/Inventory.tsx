@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useGame } from '../contexts/GameContext';
 import { db } from '../db/database';
-import type { InventoryItem } from '../db/models';
+import type { InventoryItem, Purchase, UsageLog } from '../db/models';
 import { todayStr } from '../db/models';
 
 const DEFAULT_ITEMS: Omit<InventoryItem, 'id'>[] = [
@@ -57,6 +57,7 @@ export default function Inventory() {
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [showShop, setShowShop] = useState(false);
   const [activeItem, setActiveItem] = useState<InventoryItem | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => { loadItems(); }, []);
 
@@ -139,6 +140,12 @@ export default function Inventory() {
       {/* 今日统计 */}
       <DailyStats />
 
+      <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 16 }}>
+        <button className="pixel-btn" onClick={() => setShowHistory(true)}>📋 记录</button>
+      </div>
+
+      {showHistory && <HistoryModal onClose={() => setShowHistory(false)} />}
+
       <div style={{ textAlign: 'center', marginTop: 20 }}>
         <button className="pixel-btn" onClick={() => setShowShop(true)}>商城</button>
       </div>
@@ -205,6 +212,64 @@ export default function Inventory() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function HistoryModal({ onClose }: { onClose: () => void }) {
+  const [purchases, setPurchases] = useState<Purchase[]>([]);
+  const [usage, setUsage] = useState<UsageLog[]>([]);
+
+  useEffect(() => {
+    db.purchases.orderBy('id').reverse().limit(30).toArray().then(setPurchases);
+    db.usageLogs.orderBy('id').reverse().limit(30).toArray().then(setUsage);
+  }, []);
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content pixel-panel" onClick={e => e.stopPropagation()} style={{ maxWidth: 420 }}>
+        <div className="modal-header">
+          <div className="pixel-title" style={{ marginBottom: 0 }}>消费记录</div>
+          <button className="pixel-btn small" onClick={onClose}>✕</button>
+        </div>
+        {purchases.length === 0 && usage.length === 0 ? (
+          <div style={{ fontSize: 12, color: 'var(--color-text-light)', textAlign: 'center', padding: 20 }}>
+            还没有记录
+          </div>
+        ) : (
+          <div style={{ maxHeight: 400, overflowY: 'auto' }}>
+            {purchases.length > 0 && (
+              <>
+                <div style={{ fontFamily: 'var(--font-pixel)', fontSize: 12, marginBottom: 8, color: 'var(--color-brown-dark)' }}>
+                  最近购买
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginBottom: 16 }}>
+                  {purchases.map((p, i) => (
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '3px 6px', borderBottom: '1px dotted var(--color-cream-dark)' }}>
+                      <span style={{ flex: 1 }}>{p.date}  {p.name}</span>
+                      <span style={{ fontFamily: 'var(--font-pixel)', color: '#c0392b' }}>-{p.price}G</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+            {usage.length > 0 && (
+              <>
+                <div style={{ fontFamily: 'var(--font-pixel)', fontSize: 12, marginBottom: 8, color: 'var(--color-brown-dark)' }}>
+                  最近使用
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {usage.map((u, i) => (
+                    <div key={i} style={{ fontSize: 12, padding: '3px 6px', borderBottom: '1px dotted var(--color-cream-dark)' }}>
+                      {u.date} {u.time}  使用了 {u.name}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
