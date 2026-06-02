@@ -47,7 +47,7 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div style={{ borderTop: '2px solid rgba(255,255,255,0.1)', paddingTop: 8, display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+      <div style={{ borderTop: '2px solid rgba(255,255,255,0.1)', paddingTop: 8, display: 'flex', gap: 4 }}>
         <button
           onClick={async () => {
             const db = (await import('../../db/database')).db;
@@ -55,9 +55,7 @@ export default function Sidebar() {
             for (const table of db.tables) {
               data[table.name] = await table.toArray();
             }
-            const json = JSON.stringify(data);
-            // 下载文件
-            const blob = new Blob([json], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url; a.download = `stardew-life-${new Date().toISOString().slice(0,10)}.json`;
@@ -66,28 +64,16 @@ export default function Sidebar() {
           className="pixel-btn small"
           style={{ flex: 1, fontSize: 9, padding: '4px 6px', letterSpacing: 0 }}
         >
-          导出文件
+          导出
         </button>
         <button
-          onClick={async () => {
-            const db = (await import('../../db/database')).db;
-            const data: any = {};
-            for (const table of db.tables) {
-              data[table.name] = await table.toArray();
-            }
-            await navigator.clipboard.writeText(JSON.stringify(data));
-            alert('已复制到剪贴板！');
-          }}
-          className="pixel-btn small"
-          style={{ flex: 1, fontSize: 9, padding: '4px 6px', letterSpacing: 0 }}
-        >
-          复制
-        </button>
-        <button
-          onClick={async () => {
-            const text = prompt('粘贴备份数据（JSON）：');
-            if (!text) return;
-            try {
+          onClick={() => {
+            const input = document.createElement('input');
+            input.type = 'file'; input.accept = '.json';
+            input.onchange = async (e: any) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const text = await file.text();
               const data = JSON.parse(text);
               const db = (await import('../../db/database')).db;
               for (const table of db.tables) {
@@ -97,13 +83,12 @@ export default function Sidebar() {
               }
               alert('导入成功！刷新页面生效。');
               location.reload();
-            } catch { alert('数据格式错误'); }
+            };
+            input.click();
           }}
           className="pixel-btn small"
           style={{ flex: 1, fontSize: 9, padding: '4px 6px', letterSpacing: 0 }}
         >
-          粘贴导入
-        </button>
           导入
         </button>
       </div>
