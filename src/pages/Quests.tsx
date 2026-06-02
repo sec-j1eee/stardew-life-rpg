@@ -27,7 +27,7 @@ export default function Quests() {
     if (allLimited.length === 0) {
       const picked = pickDailyQuests(4);
       for (const def of picked) {
-        const id = await db.quests.add({
+        await db.quests.add({
           title: def.title, description: def.description, type: 'limited',
           subtasks: [], xpReward: def.xpReward, goldReward: def.goldReward,
           completed: false, archived: false, date: today, createdAt: new Date(),
@@ -62,6 +62,8 @@ export default function Quests() {
   async function uncompleteQuest(quest: Quest) {
     if (!quest.completed) return;
     await db.quests.update(quest.id!, { completed: false, completedDate: undefined });
+    await addXP(-quest.xpReward);
+    await addGold(-quest.goldReward);
     await loadQuests();
   }
 
@@ -286,7 +288,6 @@ function QuestFormModal({ quest, onClose, onSaved }: { quest: Quest | null; onCl
   const [description, setDescription] = useState(quest?.description || '');
   const [xpReward, setXpReward] = useState(quest?.xpReward || 50);
   const [goldReward, setGoldReward] = useState(quest?.goldReward || 10);
-  const [deadline, setDeadline] = useState(quest?.deadline || '');
   const [subtaskText, setSubtaskText] = useState('');
   const [subtasks, setSubtasks] = useState<Subtask[]>(quest?.subtasks || []);
 
@@ -294,7 +295,7 @@ function QuestFormModal({ quest, onClose, onSaved }: { quest: Quest | null; onCl
     if (!title.trim()) return;
     const data = {
       title: title.trim(), description: description.trim(), type: 'phase' as const,
-      xpReward, goldReward, deadline: deadline || undefined, subtasks,
+      xpReward, goldReward, subtasks,
       completed: quest?.completed || false, completedDate: quest?.completedDate,
       archived: false, createdAt: quest?.createdAt || new Date(),
     };
