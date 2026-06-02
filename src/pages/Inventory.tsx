@@ -137,9 +137,6 @@ export default function Inventory() {
         ))}
       </div>
 
-      {/* 今日统计 */}
-      <DailyStats />
-
       <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 16 }}>
         <button className="pixel-btn" onClick={() => setShowHistory(true)}>📋 记录</button>
       </div>
@@ -238,6 +235,21 @@ function HistoryModal({ onClose }: { onClose: () => void }) {
           </div>
         ) : (
           <div style={{ maxHeight: 400, overflowY: 'auto' }}>
+            {/* 今日统计 */}
+            {(() => {
+              const today = todayStr();
+              const todaySpent = purchases.filter(p => p.date === today).reduce((s, p) => s + p.price, 0);
+              const todayUsed = usage.filter(u => u.date === today).length;
+              return (todaySpent > 0 || todayUsed > 0) && (
+                <div style={{ display: 'flex', gap: 20, marginBottom: 12, padding: '6px 8px', background: 'var(--color-cream)', border: '1px solid var(--color-cream-dark)', fontSize: 13, fontFamily: 'var(--font-pixel)' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <img src="/assets/sdv/icons/coin.png" alt="" style={{ width: 14, height: 14, imageRendering: 'pixelated' }} />
+                    今日消费 {todaySpent}G
+                  </span>
+                  <span>今日使用 {todayUsed} 次</span>
+                </div>
+              );
+            })()}
             {purchases.length > 0 && (
               <>
                 <div style={{ fontFamily: 'var(--font-pixel)', fontSize: 12, marginBottom: 8, color: 'var(--color-brown-dark)' }}>
@@ -274,29 +286,3 @@ function HistoryModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-function DailyStats() {
-  const [spent, setSpent] = useState(0);
-  const [used, setUsed] = useState(0);
-
-  useEffect(() => {
-    db.purchases.where('date').equals(todayStr()).toArray().then(ps => {
-      setSpent(ps.reduce((s, p) => s + p.price, 0));
-    });
-    db.usageLogs.where('date').equals(todayStr()).count().then(setUsed);
-  }, []);
-
-  if (spent === 0 && used === 0) return null;
-
-  return (
-    <div className="pixel-panel" style={{ marginTop: 16 }}>
-      <div className="pixel-subtitle" style={{ marginBottom: 8, fontSize: 14 }}>今日背包统计</div>
-      <div style={{ display: 'flex', gap: 24, fontSize: 13, fontFamily: 'var(--font-pixel)' }}>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <img src="/assets/sdv/icons/coin.png" alt="" style={{ width: 16, height: 16, imageRendering: 'pixelated' }} />
-          消费 {spent}G
-        </span>
-        <span>🎒 使用 {used} 次</span>
-      </div>
-    </div>
-  );
-}
