@@ -180,13 +180,6 @@ export default function Quests() {
                       {tmpl.name}
                     </div>
                     <div style={{ fontSize: 11, color: 'var(--color-text-light)', marginBottom: 6 }}>{tmpl.description}</div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
-                      {tmpl.quests.map(q => (
-                        <span key={q.title} className="pixel-badge" style={{ fontSize: 9, background: '#e8dcc8', color: 'var(--color-text)' }}>
-                          {q.title}
-                        </span>
-                      ))}
-                    </div>
                     <div style={{ display: 'flex', gap: 16, fontSize: 10, fontFamily: 'var(--font-pixel)', color: 'var(--color-text-light)' }}>
                       <span>⭐ {totalXP}XP</span>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
