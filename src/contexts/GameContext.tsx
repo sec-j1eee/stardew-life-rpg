@@ -182,15 +182,22 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const addXP = useCallback(async (amount: number) => {
     if (!state.player) return;
     const bonus = getStatBonus(state.player.stats);
-    const multiplier = 1 + (bonus.xpMultiplier || 0);
+    const multiplier = amount > 0 ? (1 + (bonus.xpMultiplier || 0)) : 1;
     const oldLevel = state.player.level;
     let xp = state.player.xp + Math.round(amount * multiplier);
     let level = state.player.level;
 
+    // 升级
     while (xp >= xpForLevel(level)) {
       xp -= xpForLevel(level);
       level++;
     }
+    // 降级（扣经验时可能跌回上一级）
+    while (xp < 0 && level > 1) {
+      level--;
+      xp += xpForLevel(level);
+    }
+    if (xp < 0) xp = 0;
 
     let updated = { ...state.player, xp, level };
     await db.players.update(state.player.id!, { xp, level });
